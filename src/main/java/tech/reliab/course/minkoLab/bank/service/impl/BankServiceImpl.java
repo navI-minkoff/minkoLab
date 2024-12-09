@@ -1,106 +1,66 @@
 package tech.reliab.course.minkoLab.bank.service.impl;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import tech.reliab.course.minkoLab.bank.entity.Bank;
+import tech.reliab.course.minkoLab.bank.repository.BankRepository;
 import tech.reliab.course.minkoLab.bank.service.BankService;
-import tech.reliab.course.minkoLab.bank.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.concurrent.Callable;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.Random;
 
+@Service
+@RequiredArgsConstructor
 public class BankServiceImpl implements BankService {
 
-    private final UserService userService;
+    private static final int RATING_BOUND = 101;
+    private static final int TOTAL_MONEY_BOUND = 1000001;
+    private static final int MAX_RATE = 20;
+    private static final double DIVIDER = 10.0;
 
-    private List<Bank> banks = new ArrayList<>();
+    private final BankRepository bankRepository;
 
-    public BankServiceImpl(UserService userService) {
-        this.userService = userService;
+    public Bank createBank(String bankName) {
+        Bank bank = new Bank(bankName);
+        bank.setRating(generateRating());
+        bank.setTotalMoney(generateTotalMoney());
+        bank.setInterestRate(calculateInterestRate(bank.getRating()));
+        return bankRepository.save(bank);
     }
 
-    public void registerBank(Bank bank) {
-        if (getBankById(bank.getId()).isPresent()) return;
-        banks.add(bank);
+    private int generateRating() {
+        return new Random().nextInt(RATING_BOUND);
     }
 
-    public Optional<Bank> getBankById(int id) {
-        Predicate<Bank> filterById = bank -> bank.getId() == id;
-        return banks.stream()
-                .filter(filterById)
-                .findFirst();
+    private double generateTotalMoney() {
+        return new Random().nextInt(TOTAL_MONEY_BOUND);
+    }
+
+    private double calculateInterestRate(int rating) {
+        return MAX_RATE - (rating / DIVIDER);
+    }
+
+    public Bank getBankDtoById(int id) {
+        return getBankById(id);
+    }
+
+    public Bank getBankById(int id) {
+        return bankRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Bank was not found"));
     }
 
     public List<Bank> getAllBanks() {
-        return new ArrayList<>(banks);
+        return bankRepository.findAll();
     }
 
-    public void updateBank(int id, String name) {
-        Bank bank = getBankIfExists(id);
+    public Bank updateBank(int id, String name) {
+        Bank bank = getBankById(id);
         bank.setName(name);
+        return bankRepository.save(bank);
     }
 
     public void deleteBank(int id) {
-        Bank bank = getBankIfExists(id);
-        banks.remove(bank);
-        userService.deleteBank(bank);
-    }
-
-    public Bank getBankIfExists(int id) throws NoSuchElementException {
-        return getBankById(id).orElseThrow(() -> new NoSuchElementException("Bank was not found"));
-    }
-
-    public int addOffice(int id) {
-        var bank = getBankIfExists(id);
-        bank.setOfficeCount(bank.getOfficeCount() + 1);
-        return bank.getOfficeCount();
-    }
-
-    public int addAtm(int id) {
-        var bank = getBankIfExists(id);
-        bank.setAtmCount(bank.getAtmCount() + 1);
-        return bank.getAtmCount();
-    }
-
-
-    public int addEmployee(int id) {
-        var bank = getBankIfExists(id);
-        bank.setEmployeeCount(bank.getEmployeeCount() + 1);
-        return bank.getEmployeeCount();
-    }
-
-    public int addClient(int id) {
-        var bank = getBankIfExists(id);
-        bank.setClientCount(bank.getClientCount() + 1);
-        return bank.getClientCount();
-    }
-
-
-    public int removeOffice(int id) {
-        var bank = getBankIfExists(id);
-        bank.setOfficeCount(bank.getOfficeCount() - 1);
-        return bank.getOfficeCount();
-    }
-
-    public int removeAtm(int id) {
-        var bank = getBankIfExists(id);
-        bank.setAtmCount(bank.getAtmCount() - 1);
-        return bank.getAtmCount();
-    }
-
-
-    public int removeEmployee(int id) {
-        var bank = getBankIfExists(id);
-        bank.setEmployeeCount(bank.getEmployeeCount() - 1);
-        return bank.getEmployeeCount();
-    }
-
-    public int removeClient(int id) {
-        var bank = getBankIfExists(id);
-        bank.setClientCount(bank.getClientCount() - 1);
-        return bank.getClientCount();
+        bankRepository.deleteById(id);
     }
 }

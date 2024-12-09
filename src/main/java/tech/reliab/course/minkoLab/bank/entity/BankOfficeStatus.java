@@ -9,7 +9,7 @@ public enum BankOfficeStatus {
 
     private static final Random RANDOM = new Random();
 
-    public static BankOfficeStatus randomStatus()  {
+    public static BankOfficeStatus randomStatus() {
         BankOfficeStatus[] statuses = values();
         return statuses[RANDOM.nextInt(statuses.length)];
     }

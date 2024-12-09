@@ -1,25 +1,51 @@
 package tech.reliab.course.minkoLab.bank.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDate;
 
-@Setter
+@Entity
+@Builder
 @Getter
-
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "credit_accounts")
 public class CreditAccount {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
+
+    @ManyToOne
     private User user;
+
+    @ManyToOne
     private Bank bank;
+
+    @Column(nullable = false)
     private LocalDate startDate;
+
+    @Column(nullable = false)
     private LocalDate endDate;
+
+    @Column(nullable = false)
     private int loanTermMonths;
+
+    @Column(nullable = false)
     private double loanAmount;
+
+    @Column(nullable = false)
     private double monthlyPayment;
+
+    @Column(nullable = false)
     private double interestRate;
+
+    @ManyToOne
     private Employee employee;
+
+    @ManyToOne
     private PaymentAccount paymentAccount;
 
     public CreditAccount(User user, Bank bank, LocalDate startDate, int loanTermMonths, double interestRate, Employee employee, PaymentAccount paymentAccount) {
@@ -31,8 +57,6 @@ public class CreditAccount {
         this.employee = employee;
         this.paymentAccount = paymentAccount;
     }
-
-
 
     @Override
     public String toString() {

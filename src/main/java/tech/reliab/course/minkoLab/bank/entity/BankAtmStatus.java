@@ -11,7 +11,7 @@ public enum BankAtmStatus {
     private static final Random
             RANDOM = new Random();
 
-    public static BankAtmStatus randomStatus()  {
+    public static BankAtmStatus randomStatus() {
         BankAtmStatus[] statuses = values();
         return statuses[RANDOM.nextInt(statuses.length)];
     }

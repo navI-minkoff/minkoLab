@@ -1,62 +1,51 @@
 package tech.reliab.course.minkoLab.bank.entity;
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
 
+import java.util.List;
+
+@Entity
+@Builder
 @Getter
 @Setter
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "banks")
+@ToString
 public class Bank {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
+
+    @Column(nullable = false)
     private String name;
-    private int officeCount = 0;
-    private int atmCount = 0;
-    private int employeeCount = 0;
-    private int clientCount = 0;
+
+    @Column(nullable = false)
     private int rating;
+
+    @Column(nullable = false)
     private double totalMoney;
+
+    @Column(nullable = false)
     private double interestRate;
 
-    public Bank(int id, String name, int rating, double totalMoney, double interestRate) {
-        this.id = id;
+    @OneToMany(mappedBy = "bank")
+    private List<BankOffice> offices;
+
+    @OneToMany(mappedBy = "bank")
+    private List<BankAtm> atms;
+
+    @OneToMany(mappedBy = "bank")
+    private List<Employee> employees;
+
+    @OneToMany(mappedBy = "bank")
+    private List<CreditAccount> creditAccounts;
+
+    @OneToMany(mappedBy = "bank")
+    private List<PaymentAccount> paymentAccounts;
+
+    public Bank(String name) {
         this.name = name;
-        this.rating = rating;
-        this.totalMoney = totalMoney;
-        this.interestRate = interestRate;
-    }
-
-    public void setOfficeCount(int officeCount) {
-        if (officeCount < 0) return;
-        this.officeCount = officeCount;
-    }
-
-    public void setAtmCount(int atmCount) {
-        if (atmCount < 0) return;
-        this.atmCount = atmCount;
-    }
-
-    public void setEmployeeCount(int employeeCount) {
-        if (employeeCount < 0) return;
-        this.employeeCount = employeeCount;
-    }
-
-    public void setClientCount(int clientCount) {
-        if (clientCount < 0) return;
-        this.clientCount = clientCount;
-    }
-
-    @Override
-    public String toString() {
-        return "Bank{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", officeCount=" + officeCount +
-                ", atmCount=" + atmCount +
-                ", employeeCount=" + employeeCount +
-                ", clientCount=" + clientCount +
-                ", rating=" + rating +
-                ", totalMoney=" + totalMoney +
-                ", interestRate=" + interestRate +
-                '}';
     }
 }

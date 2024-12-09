@@ -1,79 +1,58 @@
 package tech.reliab.course.minkoLab.bank.service.impl;
 
-import tech.reliab.course.minkoLab.bank.entity.Bank;
-import tech.reliab.course.minkoLab.bank.entity.BankOffice;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import tech.reliab.course.minkoLab.bank.entity.Employee;
+import tech.reliab.course.minkoLab.bank.model.EmployeeRequest;
+import tech.reliab.course.minkoLab.bank.repository.EmployeeRepository;
+import tech.reliab.course.minkoLab.bank.service.BankOfficeService;
 import tech.reliab.course.minkoLab.bank.service.BankService;
 import tech.reliab.course.minkoLab.bank.service.EmployeeService;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Service
+@RequiredArgsConstructor
 public class EmployeeServiceImpl implements EmployeeService {
 
-    private static int employeesCount = 0;
-
+    private final EmployeeRepository employeeRepository;
     private final BankService bankService;
+    private final BankOfficeService bankOfficeService;
 
-    private final List<Employee> employees = new ArrayList<>();
 
-    public EmployeeServiceImpl(BankService bankService) {
-        this.bankService = bankService;
+    public Employee createEmployee(EmployeeRequest employeeRequest) {
+        Employee employee = new Employee(employeeRequest.getFullName(), employeeRequest.getBirthDate(),
+                employeeRequest.getPosition(), bankService.getBankById(employeeRequest.getBankId()),
+                employeeRequest.isRemoteWork(), bankOfficeService.getBankOfficeById(employeeRequest.getBankOfficeId()),
+                employeeRequest.isCanIssueLoans(), employeeRequest.getSalary());
+        return employeeRepository.save(employee);
     }
 
-    public Employee createEmployee(String fullName,
-                                   LocalDate birthDate,
-                                   String position,
-                                   Bank bank,
-                                   boolean remoteWork,
-                                   BankOffice bankOffice,
-                                   boolean canIssueLoans,
-                                   double salary) {
-        Employee employee = new Employee(fullName,
-                birthDate,
-                position,
-                bank,
-                remoteWork,
-                bankOffice,
-                canIssueLoans,
-                salary);
 
-        employee.setId(employeesCount++);
-        employees.add(employee);
-        bankService.addEmployee(bank.getId());
-        return employee;
+    public Employee getEmployeeDtoById(int id) {
+        return getEmployeeById(id);
     }
 
-    public Optional<Employee> getEmployeeById(int id) {
-        return employees.stream().filter(employee -> employee.getId() == id).findFirst();
+
+    public Employee getEmployeeById(int id) {
+        return employeeRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Employee was not found"));
     }
+
 
     public List<Employee> getAllEmployees() {
-        return new ArrayList<>(employees);
-    }
-
-    @Override
-    public List<Employee> getAllEmployeesByBank(Bank bank) {
-        return employees.stream()
-                .filter(employee -> employee.getBank().getId() == bank.getId())
-                .collect(Collectors.toList());
+        return employeeRepository.findAll();
     }
 
 
-    public void updateEmployee(int id, String name) {
-        Employee employee = getEmployeeIfExists(id);
+    public Employee updateEmployee(int id, String name) {
+        Employee employee = getEmployeeById(id);
         employee.setFullName(name);
+        return employeeRepository.save(employee);
     }
+
 
     public void deleteEmployee(int id) {
-        employees.remove(getEmployeeIfExists(id));
-    }
-
-    public Employee getEmployeeIfExists(int id) {
-        return getEmployeeById(id).orElseThrow(() -> new NoSuchElementException("Employee was not found"));
+        employeeRepository.deleteById(id);
     }
 }

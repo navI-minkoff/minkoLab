@@ -1,17 +1,30 @@
 package tech.reliab.course.minkoLab.bank.entity;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Builder
 @Getter
 @Setter
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "payment_accounts")
 public class PaymentAccount {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
+
+    @ManyToOne
     private User user;
+
+    @ManyToOne
     private Bank bank;
-    private double balance = 0;
+
+    @Column(nullable = false)
+    private double balance;
 
     public PaymentAccount(User user, Bank bank) {
         this.user = user;
