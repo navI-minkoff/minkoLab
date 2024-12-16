@@ -65,5 +65,6 @@ public class BankOffice {
         this.cashDeposit = cashDeposit;
         this.rentCost = rentCost;
         this.bank = bank;
+        this.status = BankOfficeStatus.WORKING;
     }
 }

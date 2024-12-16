@@ -15,4 +15,6 @@ public interface BankService {
     Bank updateBank(int id, String name);
 
     void deleteBank(int id);
+
+    void deleteAllBanks();
 }

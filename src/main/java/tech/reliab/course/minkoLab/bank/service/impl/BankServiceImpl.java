@@ -63,4 +63,8 @@ public class BankServiceImpl implements BankService {
     public void deleteBank(int id) {
         bankRepository.deleteById(id);
     }
+
+    public void deleteAllBanks() {
+        bankRepository.deleteAll();
+    }
 }

@@ -33,7 +33,7 @@ public class BankOfficeServiceImpl implements BankOfficeService {
     }
 
     private double generateOfficeMoney(Bank bank) {
-        return new Random().nextDouble(bank.getTotalMoney());
+        return new Random().nextDouble() * bank.getTotalMoney();
     }
 
 
@@ -60,5 +60,9 @@ public class BankOfficeServiceImpl implements BankOfficeService {
 
     public void deleteBankAtm(int id) {
         bankOfficeRepository.deleteById(id);
+    }
+
+    public void deleteAllBankOffices() {
+        bankOfficeRepository.deleteAll();
     }
 }

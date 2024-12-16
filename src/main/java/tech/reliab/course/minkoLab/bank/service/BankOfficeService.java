@@ -17,4 +17,6 @@ public interface BankOfficeService {
     BankOffice updateBankOffice(int id, String name);
 
     void deleteBankAtm(int id);
+
+    void deleteAllBankOffices();
 }

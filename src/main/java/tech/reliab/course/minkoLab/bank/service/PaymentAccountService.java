@@ -17,4 +17,6 @@ public interface PaymentAccountService {
     PaymentAccount updatePaymentAccount(int id, int bankId);
 
     void deletePaymentAccount(int id);
+
+    void deleteAllPaymentAccounts();
 }

@@ -39,7 +39,7 @@ public class BankAtmServiceImpl implements BankAtmService {
     }
 
     private double generateAtmMoney(Bank bank) {
-        return new Random().nextDouble(bank.getTotalMoney());
+        return new Random().nextDouble() * bank.getTotalMoney();
     }
 
     public BankAtm getBankAtmById(int id) {
@@ -66,5 +66,9 @@ public class BankAtmServiceImpl implements BankAtmService {
 
     public void deleteBankAtm(int id) {
         bankAtmRepository.deleteById(id);
+    }
+
+    public void requestBankInfo() {
+
     }
 }

@@ -17,4 +17,6 @@ public interface CreditAccountService {
     CreditAccount updateCreditAccount(int id, int bankId);
 
     void deleteCreditAccount(int id);
+
+    void deleteAllCreditAccounts();
 }

@@ -93,4 +93,8 @@ public class CreditAccountServiceImpl implements CreditAccountService {
     public void deleteCreditAccount(int id) {
         creditAccountRepository.deleteById(id);
     }
+
+    public void deleteAllCreditAccounts() {
+        creditAccountRepository.deleteAll();
+    }
 }

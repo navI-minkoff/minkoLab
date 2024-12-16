@@ -48,4 +48,8 @@ public class PaymentAccountServiceImpl implements PaymentAccountService {
     public void deletePaymentAccount(int id) {
         paymentAccountRepository.deleteById(id);
     }
+
+    public void deleteAllPaymentAccounts() {
+        paymentAccountRepository.deleteAll();
+    }
 }
